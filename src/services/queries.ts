@@ -1,9 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMockedRepositories } from "./api";
+import { getCommitsFromRepo } from "./api";
 
-export function useMockedRepositories() {
+export function useCommitsFromRepo(
+  repo: string,
+  startDate: string,
+  endDate: string
+) {
   return useQuery({
-    queryKey: ["repositories"],
-    queryFn: getMockedRepositories,
+    queryKey: ["commits", repo, startDate, endDate],
+    queryFn: async () => {
+      if (!repo) return [];
+
+      return await getCommitsFromRepo(repo, startDate, endDate);
+    },
   });
 }

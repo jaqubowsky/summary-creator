@@ -1,68 +1,63 @@
-export async function getMockedRepositories() {
+import octokit from "@/lib/octokit";
+import { Commit } from "@/types/commits";
+import { Repo } from "@/types/repo";
+
+export async function getCommitsFromRepo(
+  repo: string,
+  startDate: string,
+  endDate: string
+) {
+  const [owner, name] = repo.split("/");
+  let allCommits: any[] = [];
+  let page = 1;
+  const perPage = 100;
+
+  while (true) {
+    const { data } = await octokit.rest.repos.listCommits({
+      owner,
+      repo: name,
+      author: "jaqubowsky",
+      since: startDate,
+      until: endDate,
+      per_page: perPage,
+      page,
+    });
+
+    if (data.length === 0) break;
+
+    allCommits = allCommits.concat(data);
+    page++;
+  }
+
+  allCommits.reverse();
+
+  const commits = allCommits.map((commit) => {
+    const { commit: commitData, author } = commit;
+    const { message } = commitData;
+
+    const name = commitData?.author?.name || author?.login || "Unknown";
+    const commitDate = new Date(commitData.author?.date || "");
+
+    return {
+      person: name,
+      description: message,
+      issue: "",
+      client: "R&D",
+      product: "InstaGo",
+      category: "Programming",
+      date: commitDate.toISOString().split("T")[0],
+      start: "08:30",
+      end: "16:30",
+      hours: 8,
+      minutes: 0,
+    } as Commit;
+  });
+
   return [
     {
-      name: "shadcn/ui",
-      owner: "shadcn",
-      commits: [
-        {
-          person: "John Doe",
-          description: "Implemented new feature",
-          issue: "#123",
-          client: "Acme Inc",
-          product: "Web App",
-          category: "Feature",
-          date: "2023-05-01",
-          start: "09:00",
-          end: "17:00",
-          hours: 8,
-          minutes: 0,
-        },
-        {
-          person: "Jane Smith",
-          description: "Fixed bug in login flow",
-          issue: "#456",
-          client: "Acme Inc",
-          product: "Web App",
-          category: "Bug Fix",
-          date: "2023-05-02",
-          start: "10:30",
-          end: "16:45",
-          hours: 6,
-          minutes: 15,
-        },
-      ],
+      name: repo,
+      owner,
+      commits,
     },
-    {
-      name: "vercel/next.js",
-      owner: "vercel",
-      commits: [
-        {
-          person: "Bob Johnson",
-          description: "Improved performance",
-          issue: "#789",
-          client: "Globex Corp",
-          product: "Mobile App",
-          category: "Optimization",
-          date: "2023-05-03",
-          start: "08:00",
-          end: "14:30",
-          hours: 6,
-          minutes: 30,
-        },
-        {
-          person: "Sarah Lee",
-          description: "Added new API endpoint",
-          issue: "#321",
-          client: "Globex Corp",
-          product: "Mobile App",
-          category: "Feature",
-          date: "2023-05-04",
-          start: "11:00",
-          end: "18:00",
-          hours: 7,
-          minutes: 0,
-        },
-      ],
-    },
-  ];
+  ] as Repo[];
 }
