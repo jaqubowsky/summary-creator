@@ -1,5 +1,9 @@
 import * as excel from "@/lib/excel";
-import { combineCommitsWithSameDate, formatGitHubCommit } from "@/lib/format";
+import {
+  combineCommitsWithSameDate,
+  formatGitHubCommit,
+  getJSONDataInOrder,
+} from "@/lib/format";
 import octokit from "@/lib/octokit";
 import openai from "@/lib/openai";
 import { generateDescriptionPrompt } from "@/lib/prompts";
@@ -91,7 +95,26 @@ export async function generateDescriptionsFromCommits(
 export const exportCommitsDataToExcel = async (data: FormattedCommit[]) => {
   const { workbook, worksheet } = excel.createNewWorkbook("Commits");
 
-  const headers = Object.keys(data[0]) as (keyof FormattedCommit)[];
+  const correctOrder = [
+    "person",
+    "description",
+    "issue",
+    "client",
+    "product",
+    "category",
+    "date",
+    "start",
+    "end",
+    "hours",
+    "minutes",
+    "totalTime",
+  ];
+
+  const orderedData = getJSONDataInOrder(
+    data,
+    correctOrder
+  ) as FormattedCommit[];
+  const headers = Object.keys(orderedData[0]) as (keyof FormattedCommit)[];
 
   const capitalizedHeaders = excel.capitalizeHeaders(headers);
   const headerRow = worksheet.addRow(capitalizedHeaders);
@@ -101,7 +124,7 @@ export const exportCommitsDataToExcel = async (data: FormattedCommit[]) => {
   const columnWidths = [20, 40, 30, 15, 15, 20, 15, 10, 10, 10, 10, 15];
   excel.setColumnWidths(worksheet, columnWidths);
 
-  excel.addDataToWorksheet(data, worksheet);
+  excel.addDataToWorksheet(orderedData, worksheet);
 
   excel.formatHoursAndMinutes(worksheet);
   excel.calculateTotalTime(worksheet);
