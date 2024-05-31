@@ -1,4 +1,9 @@
-import { Commit, SortedByDateCommit } from "@/types/commits";
+import {
+  AICommit,
+  Commit,
+  FormattedCommit,
+  SortedByDateCommit,
+} from "@/types/commits";
 import { GitHubCommit } from "@/types/github";
 
 const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
@@ -24,17 +29,74 @@ const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
   };
 };
 
-const combineCommitsWithSameDate = (commits: Commit[]) => {
-  return commits.reduce((acc, commit) => {
-    const { date } = commit;
+function formatCommitsFromAI(
+  data: AICommit[],
+  issue = "",
+  client = "R&D",
+  product = "InstaGo",
+  category = "Programming"
+): FormattedCommit[] {
+  const result: FormattedCommit[] = [];
+
+  for (const entry of data) {
+    const { person, description, hours, minutes, totalTime, start, end, date } =
+      entry;
+
+    result.push({
+      totalTime: totalTime,
+      person: person,
+      description: description,
+      issue: issue,
+      client: client,
+      product: product,
+      category: category,
+      date: date,
+      start: start,
+      end: end,
+      hours: hours,
+      minutes: minutes,
+    });
+  }
+
+  return result;
+}
+
+function getJSONDataInOrder(data: FormattedCommit[], order: string[]) {
+  const orderedData = data.map((commit) => {
+    const orderedCommit: { [key: string]: string | number } = {};
+
+    order.forEach((header) => {
+      orderedCommit[header] = commit[header as keyof FormattedCommit];
+    });
+
+    return orderedCommit;
+  });
+
+  return orderedData;
+}
+
+function combineCommitsWithSameDate(
+  commits: Commit[]
+): { [date: string]: Commit[] }[] {
+  const groupedCommits: SortedByDateCommit = commits.reduce((acc, commit) => {
+    const { date, ...rest } = commit;
     if (!acc[date]) {
       acc[date] = [];
     }
 
-    acc[date].push(commit);
+    acc[date].push({ ...rest, date });
 
     return acc;
   }, {} as SortedByDateCommit);
-};
 
-export { combineCommitsWithSameDate, formatGitHubCommit };
+  return Object.keys(groupedCommits).map((date) => ({
+    [date]: groupedCommits[date],
+  }));
+}
+
+export {
+  combineCommitsWithSameDate,
+  formatCommitsFromAI,
+  formatGitHubCommit,
+  getJSONDataInOrder,
+};

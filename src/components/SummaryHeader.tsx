@@ -1,5 +1,5 @@
 import { FormattedCommit } from "@/types/commits";
-import { ExportToCSVButton } from "./ExportToCSVButton";
+import { DownloadExcelFileButton } from "./DownloadExcelFileButton";
 
 const SummaryHeader = ({ data }: { data: FormattedCommit[] }) => {
   return (
@@ -9,7 +9,7 @@ const SummaryHeader = ({ data }: { data: FormattedCommit[] }) => {
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <ExportToCSVButton data={data} />
+          <DownloadExcelFileButton data={data} />
         </div>
       </div>
     </header>

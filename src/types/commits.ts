@@ -1,6 +1,4 @@
 export type FormattedCommit = {
-  totalHours: number;
-  totalMinutes: number;
   totalTime: number;
   person: string;
   description: string;
@@ -22,6 +20,19 @@ export type Commit = {
   date: string;
 };
 
+export type AICommit = Commit & {
+  start: string;
+  end: string;
+  date: string;
+  hours: number;
+  minutes: number;
+  totalTime: number;
+};
+
 export type SortedByDateCommit = {
   [date: string]: Commit[];
+};
+
+export type SortedByDateAICommit = {
+  [date: string]: AICommit[];
 };
