@@ -20,7 +20,7 @@ const SummaryAside = ({
   setEndDate,
 }: SummaryAsideProps) => {
   return (
-    <div>
+    <div className="p-4">
       <div className="flex flex-col gap-2">
         <Label htmlFor="repoInput" className="text-sm text-white">
           Repo to fetch:
@@ -56,7 +56,7 @@ const SummaryAside = ({
         />
         <Button
           onClick={() => {}}
-          className="bg-zinc-900 text-white px-4 py-2 rounded-md"
+          className="bg-zinc-900 text-white px-4 py-2 rounded-md w-full"
         >
           Fetch
         </Button>

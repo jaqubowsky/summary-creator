@@ -7,7 +7,7 @@ const ExportToCSVButton = ({ data }: { data: FormattedCommit[] }) => {
   };
 
   return (
-    <Button variant="secondary" className="px-4 py-2 rounded-md">
+    <Button variant="default" className="px-4 py-2 rounded-md">
       Export to CSV
     </Button>
   );

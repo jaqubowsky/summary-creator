@@ -22,16 +22,17 @@ export default function MainPage() {
   return (
     <div className="flex h-screen w-full flex-col dark:bg-gray-950 dark:text-gray-50">
       <SummaryHeader data={filteredCommits} />
+
       <div className="flex h-full">
+        <SummaryAside
+          repoInput={repoInput}
+          setRepoInput={setRepoInput}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
         <div className="bg-zinc-900 p-4 flex flex-col gap-4">
-          <SummaryAside
-            repoInput={repoInput}
-            setRepoInput={setRepoInput}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-          />
           <main className="flex-1 overflow-auto p-6">
             <SummaryTable data={filteredCommits} />
           </main>
