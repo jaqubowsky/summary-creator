@@ -9,7 +9,7 @@ export function useCommitsFromRepo(
   return useQuery({
     queryKey: ["commits", repo, startDate, endDate],
     queryFn: async () => {
-      if (!repo) return [];
+      if (!repo) return null;
 
       return await getCommitsFromRepo(repo, startDate, endDate);
     },

@@ -14,7 +14,14 @@ export type FormattedCommit = {
   hours: number;
   minutes: number;
 };
-export type Commit = Omit<
-  FormattedCommit,
-  "totalHours" | "totalMinutes" | "totalTime"
->;
+
+export type Commit = {
+  repo: string;
+  person: string;
+  description: string;
+  date: string;
+};
+
+export type SortedByDateCommit = {
+  [date: string]: Commit[];
+};

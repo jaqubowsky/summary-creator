@@ -4,7 +4,6 @@ import {
   getFirstDayOfCurrentMonth,
   getLastDayOfCurrentMonth,
 } from "@/lib/date";
-import { formatCommitsFromRepos } from "@/lib/format";
 import { useCommitsFromRepo } from "@/services/queries";
 import { useState } from "react";
 import { SummaryAside } from "./SummaryAside";
@@ -17,15 +16,12 @@ export default function MainPage() {
   const [endDate, setEndDate] = useState(getLastDayOfCurrentMonth());
 
   const reposQuery = useCommitsFromRepo(repoInput, startDate, endDate);
-  const filteredCommits = formatCommitsFromRepos(
-    reposQuery.data ?? [],
-    startDate,
-    endDate
-  );
+
+  console.log(reposQuery.data);
 
   return (
     <div className="flex h-screen w-full flex-col dark:bg-gray-950 dark:text-gray-50">
-      <SummaryHeader data={filteredCommits} />
+      <SummaryHeader data={[]} />
 
       <div className="flex h-full">
         <SummaryAside
@@ -38,7 +34,7 @@ export default function MainPage() {
         />
         <div className="bg-zinc-900 p-4 flex flex-col gap-4">
           <main className="flex-1 overflow-auto p-6">
-            <SummaryTable data={filteredCommits} />
+            <SummaryTable data={[]} />
           </main>
         </div>
       </div>
