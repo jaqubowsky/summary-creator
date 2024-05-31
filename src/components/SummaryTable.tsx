@@ -3,14 +3,28 @@ import { SummaryTableHeader } from "./SummaryTableHeader";
 import { WorkDoneRow } from "./WorkDoneRow";
 import { Table, TableBody } from "./ui/table";
 
-const SummaryTable = ({ data }: { data: FormattedCommit[] }) => {
+const SummaryTable = ({
+  data,
+  isLoading,
+}: {
+  data: FormattedCommit[];
+  isLoading: boolean;
+}) => {
   return (
     <Table>
       <SummaryTableHeader />
       <TableBody>
-        {data.map((commit, index) => (
-          <WorkDoneRow key={index} commit={commit} />
-        ))}
+        {isLoading ? (
+          <tr>
+            <td colSpan={5} className="text-center py-4">
+              Loading...
+            </td>
+          </tr>
+        ) : (
+          data.map((commit, index) => (
+            <WorkDoneRow key={index} commit={commit} />
+          ))
+        )}
       </TableBody>
     </Table>
   );

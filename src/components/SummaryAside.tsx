@@ -1,3 +1,4 @@
+import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
@@ -8,6 +9,7 @@ type SummaryAsideProps = {
   setStartDate: (value: string) => void;
   endDate: string;
   setEndDate: (value: string) => void;
+  handleGenerateDescriptions: () => void;
 };
 
 const SummaryAside = ({
@@ -17,6 +19,7 @@ const SummaryAside = ({
   setStartDate,
   endDate,
   setEndDate,
+  handleGenerateDescriptions,
 }: SummaryAsideProps) => {
   return (
     <div className="p-4">
@@ -53,6 +56,9 @@ const SummaryAside = ({
           onChange={(e) => setEndDate(e.target.value)}
           className="bg-gray-800 text-white px-2 py-1 rounded-md"
         />
+        <Button className="w-full mt-4" onClick={handleGenerateDescriptions}>
+          Fetch and generate
+        </Button>
       </div>
     </div>
   );
