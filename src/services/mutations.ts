@@ -1,14 +1,22 @@
 import { formatCommitsFromAI } from "@/lib/format";
 import { FormattedCommit, SortedByDateCommit } from "@/types/commits";
 import { useMutation } from "@tanstack/react-query";
-import { generateDescriptionsFromCommits, getCommitsFromRepo } from "./api";
+import { generateDescriptionsFromCommits, getCommitsFromRepos } from "./api";
 
-const useFetchCommits = (repo: string, startDate: string, endDate: string) => {
+const useFetchCommits = (
+  repos: string[],
+  startDate: string,
+  endDate: string
+) => {
   return useMutation({
     mutationKey: ["fetch-commits"],
     mutationFn: async (): Promise<SortedByDateCommit[] | null> => {
-      if (!repo) return null;
-      return await getCommitsFromRepo(repo, startDate, endDate);
+      if (!repos.length) return null;
+
+      return await getCommitsFromRepos(repos, startDate, endDate);
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 };

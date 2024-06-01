@@ -38,16 +38,6 @@ const formatHoursAndMinutes = (worksheet: ExcelJS.Worksheet) => {
   worksheet.getColumn(11).numFmt = "0";
 };
 
-const calculateTotalTime = (worksheet: ExcelJS.Worksheet) => {
-  if (!worksheet.lastRow) return;
-
-  const totalTimeCell = worksheet.getCell(`L${worksheet.lastRow.number + 2}`);
-  totalTimeCell.value = {
-    formula: `SUM(L2:L${worksheet.lastRow.number - 1})`,
-  };
-  totalTimeCell.font = { bold: true };
-};
-
 const addDataToWorksheet = (
   data: FormattedCommit[],
   worksheet: ExcelJS.Worksheet
@@ -65,6 +55,11 @@ const addDataToWorksheet = (
         fgColor: { argb: index % 2 === 0 ? "D9EAD3" : "FFFFFF" },
       };
     }
+
+    const totalTimeCell = dataRow.getCell(12);
+    totalTimeCell.value = {
+      formula: `ROUND((J${dataRow.number}*60+K${dataRow.number})/60, 2)`,
+    };
   });
 };
 
@@ -86,7 +81,6 @@ const downloadWorkbook = async (workbook: ExcelJS.Workbook, name: string) => {
 
 export {
   addDataToWorksheet,
-  calculateTotalTime,
   capitalizeHeaders,
   createNewWorkbook,
   downloadWorkbook,

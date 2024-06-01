@@ -12,6 +12,7 @@ import { SummaryTable } from "./SummaryTable";
 
 export default function MainPage() {
   const [repoInput, setRepoInput] = useState("");
+  const [repos, setRepos] = useState<string[]>([]);
   const [startDate, setStartDate] = useState(getFirstDayOfCurrentMonth());
   const [endDate, setEndDate] = useState(getLastDayOfCurrentMonth());
 
@@ -20,7 +21,7 @@ export default function MainPage() {
     data: commitsData,
     isSuccess: isFetchCommitsSuccess,
     isPending: isFetchingCommits,
-  } = useFetchCommits(repoInput, startDate, endDate);
+  } = useFetchCommits(repos, startDate, endDate);
 
   const {
     mutate: generateDescriptions,
@@ -43,6 +44,8 @@ export default function MainPage() {
         <SummaryAside
           repoInput={repoInput}
           setRepoInput={setRepoInput}
+          repos={repos}
+          setRepos={setRepos}
           startDate={startDate}
           setStartDate={setStartDate}
           endDate={endDate}
