@@ -18,33 +18,50 @@ export async function getCommitsFromRepos(
 
   for (const repo of repos) {
     const [owner, repoName] = repo.split("/");
-    let page = 1;
-    const perPage = 100;
 
-    while (true) {
-      const { data } = await octokit.rest.repos.listCommits({
-        owner,
-        repo: repoName,
-        author: process.env.NEXT_PUBLIC_GITHUB_USERNAME,
-        since: startDate,
-        until: endDate,
-        per_page: perPage,
-        page,
-      });
+    const branches = await octokit.rest.repos.listBranches({
+      owner,
+      repo: repoName,
+    });
 
-      if (data.length === 0) break;
+    branches.data.sort((a, b) => {
+      if (a.name === "develop" || a.name === "master") return 1;
+      if (b.name === "develop" || b.name === "master") return -1;
+      if (a.name.includes("release")) return 1;
+      if (b.name.includes("release")) return -1;
+      return 0;
+    });
 
-      allCommits = allCommits.concat(data);
-      page++;
+    for (const branch of branches.data) {
+      let page = 1;
+      const perPage = 100;
+
+      while (true) {
+        const { data } = await octokit.rest.repos.listCommits({
+          owner,
+          repo: repoName,
+          author: process.env.NEXT_PUBLIC_GITHUB_USERNAME,
+          since: startDate,
+          until: endDate,
+          per_page: perPage,
+          page,
+          sha: branch.name,
+        });
+
+        if (data.length === 0) break;
+
+        allCommits = allCommits.concat(data);
+        page++;
+      }
     }
   }
 
-  allCommits.reverse();
-
   if (!allCommits.length) return null;
 
+  allCommits.reverse();
+
   const commits = allCommits.map((commit) => {
-    const repoName = commit.parents[0].url.split("/").slice(-2).join("/");
+    const repoName = commit.parents[0].url.split("/")[5];
 
     return formatGitHubCommit(commit, repoName);
   });

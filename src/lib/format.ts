@@ -12,14 +12,14 @@ const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
 
   const name = commitData?.author?.name || author?.login || "Unknown";
 
-  const date = new Date(commit.commit.author?.date || "").toLocaleDateString(
-    "en-US",
-    {
+  const date = new Date(commit.commit.author?.date || "")
+    .toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
       year: "numeric",
-      month: "long",
-      day: "numeric",
-    }
-  );
+    })
+    .split("/")
+    .join(".");
 
   return {
     repo,
