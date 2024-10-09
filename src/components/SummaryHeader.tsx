@@ -1,7 +1,6 @@
-import { FormattedCommit } from "@/types/commits";
-import { DownloadExcelFileButton } from "./DownloadExcelFileButton";
+import { DownloadExcelFileButton } from './DownloadExcelFileButton';
 
-const SummaryHeader = ({ data }: { data: FormattedCommit[] }) => {
+const SummaryHeader = () => {
   return (
     <header className="bg-gray-900 dark:bg-gray-800 text-white p-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -9,7 +8,7 @@ const SummaryHeader = ({ data }: { data: FormattedCommit[] }) => {
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <DownloadExcelFileButton data={data} />
+          <DownloadExcelFileButton />
         </div>
       </div>
     </header>

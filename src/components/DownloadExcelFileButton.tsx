@@ -1,15 +1,23 @@
-import { exportCommitsDataToExcel } from "@/services/api";
-import { FormattedCommit } from "@/types/commits";
-import { Button } from "./ui/button";
+'use client';
 
-const DownloadExcelFileButton = ({ data }: { data: FormattedCommit[] }) => {
-  const handleDownloadClick = async () => await exportCommitsDataToExcel(data);
+import { mutationKeys } from '@/lib/mutation-keys';
+import { exportCommitsDataToExcel } from '@/services/api';
+import { FormattedCommit } from '@/types/commits';
+import { useMutationState } from '@tanstack/react-query';
+import { Button } from './ui/button';
+
+const DownloadExcelFileButton = () => {
+  const commits = useMutationState({
+    filters: { mutationKey: [mutationKeys.generateSummary] },
+    select: (mutation) => mutation.state.data,
+  })[0] as FormattedCommit[];
 
   return (
     <Button
-      onClick={handleDownloadClick}
+      disabled={!commits?.length}
+      onClick={() => exportCommitsDataToExcel(commits)}
       variant="default"
-      className="px-4 py-2 rounded-md"
+      className="px-4 py-2 rounded-md disabled:cursor-not-allowed"
     >
       Download Excel File
     </Button>

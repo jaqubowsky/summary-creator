@@ -3,23 +3,23 @@ import {
   Commit,
   FormattedCommit,
   SortedByDateCommit,
-} from "@/types/commits";
-import { GitHubCommit } from "@/types/github";
+} from '@/types/commits';
+import { GitHubCommit } from '@/types/github';
 
 const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
   const { commit: commitData, author } = commit;
   const { message } = commitData;
 
-  const name = commitData?.author?.name || author?.login || "Unknown";
+  const name = commitData?.author?.name || author?.login || 'Unknown';
 
-  const date = new Date(commit.commit.author?.date || "")
-    .toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+  const date = new Date(commit.commit.author?.date || '')
+    .toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     })
-    .split("/")
-    .join(".");
+    .split('/')
+    .join('.');
 
   return {
     repo,
@@ -31,30 +31,20 @@ const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
 
 function formatCommitsFromAI(
   data: AICommit[],
-  issue = "",
-  client = "R&D",
-  product = "InstaGo",
-  category = "Programming"
+  issue = '',
+  client = 'R&D',
+  product = 'InstaGo',
+  category = 'Programming'
 ): FormattedCommit[] {
   const result: FormattedCommit[] = [];
 
   for (const entry of data) {
-    const { person, description, hours, minutes, totalTime, start, end, date } =
-      entry;
-
     result.push({
-      totalTime: totalTime,
-      person: person,
-      description: description,
-      issue: issue,
-      client: client,
-      product: product,
-      category: category,
-      date: date,
-      start: start,
-      end: end,
-      hours: hours,
-      minutes: minutes,
+      ...entry,
+      issue,
+      client,
+      product,
+      category,
     });
   }
 
@@ -80,9 +70,7 @@ function combineCommitsWithSameDate(
 ): { [date: string]: Commit[] }[] {
   const groupedCommits: SortedByDateCommit = commits.reduce((acc, commit) => {
     const { date, ...rest } = commit;
-    if (!acc[date]) {
-      acc[date] = [];
-    }
+    if (!acc[date]) acc[date] = [];
 
     acc[date].push({ ...rest, date });
 

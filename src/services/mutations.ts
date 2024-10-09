@@ -1,19 +1,30 @@
-import { formatCommitsFromAI } from "@/lib/format";
-import { FormattedCommit, SortedByDateCommit } from "@/types/commits";
-import { useMutation } from "@tanstack/react-query";
-import { generateDescriptionsFromCommits, getCommitsFromRepos } from "./api";
+'use client';
 
-const useFetchCommits = (
-  repos: string[],
-  startDate: string,
-  endDate: string
-) => {
+import { formatCommitsFromAI } from '@/lib/format';
+import { mutationKeys } from '@/lib/mutation-keys';
+import { useDateStore } from '@/stores/date.store';
+import { useReposStore } from '@/stores/repos.store';
+import { FormattedCommit } from '@/types/commits';
+import { useMutation } from '@tanstack/react-query';
+import { generateDescriptionsFromCommits, getCommitsFromRepos } from './api';
+
+const useGenerateSummary = () => {
+  const { repos } = useReposStore();
+  const { startDate, endDate } = useDateStore();
+
   return useMutation({
-    mutationKey: ["fetch-commits"],
-    mutationFn: async (): Promise<SortedByDateCommit[] | null> => {
-      if (!repos.length) return null;
+    mutationKey: [mutationKeys.generateSummary, repos, startDate, endDate],
+    mutationFn: async (): Promise<FormattedCommit[] | []> => {
+      if (!repos.length) return [];
 
-      return await getCommitsFromRepos(repos, startDate, endDate);
+      const commits = await getCommitsFromRepos(repos, startDate, endDate);
+      if (!commits) return [];
+
+      const descriptions = await generateDescriptionsFromCommits(commits);
+      if (!descriptions) return [];
+
+      const summary = formatCommitsFromAI(descriptions);
+      return summary;
     },
     onError: (error) => {
       console.error(error);
@@ -21,17 +32,4 @@ const useFetchCommits = (
   });
 };
 
-const useGenerateDescriptions = () => {
-  return useMutation({
-    mutationKey: ["generate-descriptions"],
-    mutationFn: async (
-      data: SortedByDateCommit[]
-    ): Promise<FormattedCommit[] | null> => {
-      const descriptions = await generateDescriptionsFromCommits(data);
-      if (!descriptions) return null;
-      return formatCommitsFromAI(descriptions) as FormattedCommit[];
-    },
-  });
-};
-
-export { useFetchCommits, useGenerateDescriptions };
+export { useGenerateSummary };

@@ -23,7 +23,8 @@
     "react": "^19.0.0-rc-9d4fba0788-20240530",
     "react-dom": "^19.0.0-rc-9d4fba0788-20240530",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.35.6",

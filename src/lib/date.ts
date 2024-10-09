@@ -3,8 +3,7 @@ function getFirstDayOfCurrentMonth() {
 
   today.setDate(1);
 
-  const firstDay = today.toISOString().slice(0, 10);
-  return firstDay;
+  return today;
 }
 
 function getLastDayOfCurrentMonth() {
@@ -13,8 +12,22 @@ function getLastDayOfCurrentMonth() {
   today.setMonth(today.getMonth() + 1, 1);
   today.setDate(today.getDate() - 1);
 
-  const lastDay = today.toISOString().slice(0, 10);
-  return lastDay;
+  return today;
 }
 
-export { getFirstDayOfCurrentMonth, getLastDayOfCurrentMonth };
+function formatStringToDate(dateString: string) {
+  return new Date(dateString);
+}
+
+function formatDateToString(date: Date) {
+  if (isNaN(date.getTime())) return '';
+
+  return date.toISOString().split('T')[0];
+}
+
+export {
+  formatDateToString,
+  formatStringToDate,
+  getFirstDayOfCurrentMonth,
+  getLastDayOfCurrentMonth,
+};
