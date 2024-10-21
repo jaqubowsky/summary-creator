@@ -1,23 +1,23 @@
-import * as excel from '@/lib/excel';
+import * as excel from "@/lib/excel";
 import {
   combineCommitsWithSameDate,
   formatGitHubCommit,
   getJSONDataInOrder,
-} from '@/lib/format';
-import octokit from '@/lib/octokit';
-import openai from '@/lib/openai';
-import { generateDescriptionPrompt } from '@/lib/prompts';
-import { FormattedCommit, SortedByDateCommit } from '@/types/commits';
+} from "@/lib/format/format";
+import octokit from "@/lib/octokit";
+import openai from "@/lib/openai";
+import { generateDescriptionPrompt } from "@/lib/prompts";
+import { FormattedCommit, SortedByDateCommit } from "@/types/commits";
 
 export async function getCommitsFromRepos(
   repos: string[],
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ) {
   let allCommits: any[] = [];
 
   for (const repo of repos) {
-    const [owner, repoName] = repo.split('/');
+    const [owner, repoName] = repo.split("/");
 
     const branches = await octokit.rest.repos.listBranches({
       owner,
@@ -25,10 +25,10 @@ export async function getCommitsFromRepos(
     });
 
     branches.data.sort((a, b) => {
-      if (a.name === 'develop' || a.name === 'master') return 1;
-      if (b.name === 'develop' || b.name === 'master') return -1;
-      if (a.name.includes('release')) return 1;
-      if (b.name.includes('release')) return -1;
+      if (a.name === "develop" || a.name === "master") return 1;
+      if (b.name === "develop" || b.name === "master") return -1;
+      if (a.name.includes("release")) return 1;
+      if (b.name.includes("release")) return -1;
       return 0;
     });
 
@@ -61,7 +61,7 @@ export async function getCommitsFromRepos(
   allCommits.reverse();
 
   const commits = allCommits.map((commit) => {
-    const repoName = commit.parents[0].url.split('/')[5];
+    const repoName = commit.parents[0].url.split("/")[5];
 
     return formatGitHubCommit(commit, repoName);
   });
@@ -70,7 +70,7 @@ export async function getCommitsFromRepos(
 }
 
 export async function generateDescriptionsFromCommits(
-  commits: SortedByDateCommit[]
+  commits: SortedByDateCommit[],
 ) {
   if (!commits) return [];
 
@@ -85,15 +85,15 @@ export async function generateDescriptionsFromCommits(
       const response = await openai.chat.completions.create({
         model: process.env.NEXT_PUBLIC_OPENAI_MODEL as string,
         response_format: {
-          type: 'json_object',
+          type: "json_object",
         },
         messages: [
           {
-            role: 'system',
+            role: "system",
             content: system,
           },
           {
-            role: 'user',
+            role: "user",
             content: user,
           },
         ],
@@ -115,30 +115,30 @@ export async function generateDescriptionsFromCommits(
 }
 
 export const exportCommitsDataToExcel = async (
-  data: FormattedCommit[] | undefined
+  data: FormattedCommit[] | undefined,
 ) => {
   if (!data) return;
 
-  const { workbook, worksheet } = excel.createNewWorkbook('Commits');
+  const { workbook, worksheet } = excel.createNewWorkbook("Commits");
 
   const correctOrder = [
-    'person',
-    'description',
-    'issue',
-    'client',
-    'product',
-    'category',
-    'date',
-    'start',
-    'end',
-    'hours',
-    'minutes',
-    'totalTime',
+    "person",
+    "description",
+    "issue",
+    "client",
+    "product",
+    "category",
+    "date",
+    "start",
+    "end",
+    "hours",
+    "minutes",
+    "totalTime",
   ];
 
   const orderedData = getJSONDataInOrder(
     data,
-    correctOrder
+    correctOrder,
   ) as FormattedCommit[];
   const headers = Object.keys(orderedData[0]) as (keyof FormattedCommit)[];
 
@@ -152,5 +152,5 @@ export const exportCommitsDataToExcel = async (
   excel.addDataToWorksheet(orderedData, worksheet);
   excel.formatHoursAndMinutes(worksheet);
 
-  await excel.downloadWorkbook(workbook, 'commits');
+  await excel.downloadWorkbook(workbook, "commits");
 };
