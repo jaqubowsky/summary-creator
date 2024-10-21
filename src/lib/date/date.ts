@@ -20,9 +20,9 @@ function formatStringToDate(dateString: string) {
 }
 
 function formatDateToString(date: Date) {
-  if (isNaN(date.getTime())) return '';
+  if (isNaN(date.getTime())) return "";
 
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 
 export {
