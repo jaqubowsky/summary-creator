@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { formatCommitsFromAI } from '@/lib/format';
-import { mutationKeys } from '@/lib/mutation-keys';
-import { useDateStore } from '@/stores/date.store';
-import { useReposStore } from '@/stores/repos.store';
-import { FormattedCommit } from '@/types/commits';
-import { useMutation } from '@tanstack/react-query';
-import { generateDescriptionsFromCommits, getCommitsFromRepos } from './api';
+import { formatCommitsFromAI } from "@/lib/format/format";
+import { mutationKeys } from "@/lib/mutation-keys";
+import { useDateStore } from "@/stores/date.store";
+import { useReposStore } from "@/stores/repos.store";
+import { FormattedCommit } from "@/types/commits";
+import { useMutation } from "@tanstack/react-query";
+import { generateDescriptionsFromCommits, getCommitsFromRepos } from "./api";
 
 const useGenerateSummary = () => {
   const { repos } = useReposStore();

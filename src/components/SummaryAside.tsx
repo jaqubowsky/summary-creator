@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { formatStringToDate } from '@/lib/date';
-import { useGenerateSummary } from '@/services/mutations';
-import { useDateStore } from '@/stores/date.store';
-import { useReposStore } from '@/stores/repos.store';
-import { useState } from 'react';
-import { ReposWrapper } from './ReposWrapper';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
+import { formatStringToDate } from "@/lib/date/date";
+import { useGenerateSummary } from "@/services/mutations";
+import { useDateStore } from "@/stores/date.store";
+import { useReposStore } from "@/stores/repos.store";
+import { useState } from "react";
+import { ReposWrapper } from "./ReposWrapper";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 const SummaryAside = () => {
-  const [repoInput, setRepoInput] = useState('');
+  const [repoInput, setRepoInput] = useState("");
 
   const { addRepo } = useReposStore();
   const { startDate, endDate, setStartDate, setEndDate } = useDateStore();
@@ -20,7 +20,7 @@ const SummaryAside = () => {
 
   const handleSetRepo = () => {
     addRepo(repoInput);
-    setRepoInput('');
+    setRepoInput("");
   };
 
   return (
@@ -35,7 +35,7 @@ const SummaryAside = () => {
             type="text"
             value={repoInput}
             onChange={(e) => setRepoInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSetRepo()}
+            onKeyDown={(e) => e.key === "Enter" && handleSetRepo()}
             className="bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Button onClick={handleSetRepo}>Add Repo</Button>
@@ -50,7 +50,7 @@ const SummaryAside = () => {
           <Input
             id="startDate"
             type="date"
-            value={startDate ? startDate.toISOString().split('T')[0] : ''}
+            value={startDate ? startDate.toISOString().split("T")[0] : ""}
             onChange={(e) => setStartDate(formatStringToDate(e.target.value))}
             className="bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -63,7 +63,7 @@ const SummaryAside = () => {
           <Input
             id="endDate"
             type="date"
-            value={endDate ? endDate.toISOString().split('T')[0] : ''}
+            value={endDate ? endDate.toISOString().split("T")[0] : ""}
             onChange={(e) => setEndDate(formatStringToDate(e.target.value))}
             className="bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -74,7 +74,7 @@ const SummaryAside = () => {
           onClick={() => handleGenerateSummary()}
           disabled={isPending}
         >
-          {isPending ? 'Fetching...' : 'Generate Summary'}
+          {isPending ? "Fetching..." : "Generate Summary"}
         </Button>
       </div>
     </aside>
