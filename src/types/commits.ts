@@ -20,7 +20,7 @@ export type Commit = {
   date: string;
 };
 
-export type AICommit = Commit & {
+export type AICommit = Omit<Commit, "repo" | "date"> & {
   start: string;
   end: string;
   date: string;
