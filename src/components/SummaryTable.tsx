@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import { mutationKeys } from '@/lib/mutation-keys';
-import { FormattedCommit } from '@/types/commits';
-import { useIsMutating, useMutationState } from '@tanstack/react-query';
-import { SummaryTableHeader } from './SummaryTableHeader';
-import { WorkDoneRow } from './WorkDoneRow';
-import { Table, TableBody, TableCell, TableRow } from './ui/table';
+import { mutationKeys } from "@/lib/mutation-keys";
+import { useDateStore } from "@/stores/date.store";
+import { useReposStore } from "@/stores/repos.store";
+import { FormattedCommit } from "@/types/commits";
+import { useIsMutating, useMutationState } from "@tanstack/react-query";
+import { SummaryTableHeader } from "./SummaryTableHeader";
+import { WorkDoneRow } from "./WorkDoneRow";
+import { Table, TableBody, TableCell, TableRow } from "./ui/table";
 
 const SummaryTable = () => {
+  const { repos } = useReposStore();
+  const { startDate, endDate } = useDateStore();
+
   const commits = useMutationState({
-    filters: { mutationKey: [mutationKeys.generateSummary] },
+    filters: {
+      mutationKey: [mutationKeys.generateSummary, repos, startDate, endDate],
+    },
     select: (mutation) => mutation.state.data,
   })[0] as FormattedCommit[];
 

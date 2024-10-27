@@ -54,7 +54,24 @@ function formatCommitsFromAI(
     });
   }
 
-  return result;
+  const order = [
+    "person",
+    "description",
+    "issue",
+    "client",
+    "product",
+    "category",
+    "date",
+    "start",
+    "end",
+    "hours",
+    "minutes",
+    "totalTime",
+  ];
+
+  const jsonDataInOrder = getJSONDataInOrder(result, order);
+
+  return jsonDataInOrder;
 }
 
 function getJSONDataInOrder(data: FormattedCommit[], order: string[]) {
@@ -74,7 +91,7 @@ function getJSONDataInOrder(data: FormattedCommit[], order: string[]) {
     return orderedCommit;
   });
 
-  return orderedData;
+  return orderedData as FormattedCommit[];
 }
 
 function combineCommitsWithSameDate(

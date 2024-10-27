@@ -16,7 +16,11 @@ const SummaryAside = () => {
   const { addRepo } = useReposStore();
   const { startDate, endDate, setStartDate, setEndDate } = useDateStore();
 
-  const { mutate: handleGenerateSummary, isPending } = useGenerateSummary();
+  const {
+    data,
+    mutate: handleGenerateSummary,
+    isPending,
+  } = useGenerateSummary();
 
   const handleSetRepo = () => {
     addRepo(repoInput);

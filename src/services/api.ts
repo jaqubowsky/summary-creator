@@ -1,3 +1,5 @@
+"use server";
+
 import * as excel from "@/lib/excel";
 import {
   combineCommitsWithSameDate,
@@ -40,7 +42,7 @@ export async function getCommitsFromRepos(
         const { data } = await octokit.rest.repos.listCommits({
           owner,
           repo: repoName,
-          author: process.env.NEXT_PUBLIC_GITHUB_USERNAME,
+          author: process.env.GITHUB_USERNAME,
           since: startDate.toISOString(),
           until: endDate.toISOString(),
           per_page: perPage,
@@ -83,7 +85,7 @@ export async function generateDescriptionsFromCommits(
 
     try {
       const response = await openai.chat.completions.create({
-        model: process.env.NEXT_PUBLIC_OPENAI_MODEL as string,
+        model: process.env.OPENAI_MODEL as string,
         response_format: {
           type: "json_object",
         },
