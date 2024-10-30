@@ -8,70 +8,57 @@ import {
   getJSONDataInOrder,
 } from "./format";
 
-describe("formatGitHubCommit", () => {
-  it("should format a GitHub commit correctly", () => {
-    const sampleCommit = {
-      commit: {
-        author: {
-          name: "John Doe",
-          date: "2023-10-01T12:34:56Z",
-        },
-        message: "Initial commit",
-      },
-    } as GitHubCommit;
+const sampleRepoName = "sample-repo";
 
-    const repoName = "sample-repo";
+describe("formatGitHubCommit", () => {
+  const createGitHubCommit = (name: string | null, date: string, message: string): GitHubCommit =>
+    ({
+      commit: {
+        author: name ? { name, email: "default@example.com", date } : null,
+        message,
+      },
+    }) as GitHubCommit;
+
+  it("should format a GitHub commit correctly", () => {
+    const sampleCommit = createGitHubCommit("John Doe", "2023-10-01T12:34:56Z", "Initial commit");
     const expectedOutput = {
-      repo: "sample-repo",
+      repo: sampleRepoName,
       person: "John Doe",
       description: "Initial commit",
       date: "01.10.2023",
     };
 
-    const result = formatGitHubCommit(sampleCommit, repoName);
+    const result = formatGitHubCommit(sampleCommit, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
 
   it("should format date correctly from different time zones", () => {
-    const sampleCommit = {
-      commit: {
-        author: {
-          name: "Jane Doe",
-          date: "2023-10-01T23:59:59-05:00",
-        },
-        message: "Time zone test commit",
-      },
-    } as GitHubCommit;
-
-    const repoName = "sample-repo";
+    const sampleCommit = createGitHubCommit(
+      "Jane Doe",
+      "2023-10-01T23:59:59-05:00",
+      "Time zone test commit",
+    );
     const expectedOutput = {
-      repo: "sample-repo",
+      repo: sampleRepoName,
       person: "Jane Doe",
       description: "Time zone test commit",
       date: "02.10.2023",
     };
 
-    const result = formatGitHubCommit(sampleCommit, repoName);
+    const result = formatGitHubCommit(sampleCommit, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
 
   it("should handle null author gracefully", () => {
-    const sampleCommit = {
-      commit: {
-        author: null,
-        message: "Commit with no author",
-      },
-    } as GitHubCommit;
-
-    const repoName = "sample-repo";
+    const sampleCommit = createGitHubCommit(null, "", "Commit with no author");
     const expectedOutput = {
-      repo: "sample-repo",
+      repo: sampleRepoName,
       person: "Unknown",
       description: "Commit with no author",
       date: "Unknown",
     };
 
-    const result = formatGitHubCommit(sampleCommit, repoName);
+    const result = formatGitHubCommit(sampleCommit, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
 });
@@ -179,58 +166,29 @@ describe("getJSONDataInOrder", () => {
 });
 
 describe("combineCommitsWithSameDate", () => {
+  const createCommit = (description: string, date: string, person: string): Commit => ({
+    description,
+    date,
+    repo: "repo1",
+    person,
+  });
+
   it("should group commits by the same date", () => {
     const sampleCommits: Commit[] = [
-      {
-        description: "Commit 1",
-        date: "2023-10-01",
-        repo: "repo1",
-        person: "person1",
-      },
-      {
-        description: "Commit 2",
-        date: "2023-10-02",
-        repo: "repo1",
-        person: "person2",
-      },
-      {
-        description: "Commit 3",
-        date: "2023-10-03",
-        repo: "repo1",
-        person: "person3",
-      },
+      createCommit("Commit 1", "2023-10-01", "person1"),
+      createCommit("Commit 2", "2023-10-02", "person2"),
+      createCommit("Commit 3", "2023-10-03", "person3"),
     ];
 
     const expectedOutput = [
       {
-        "2023-10-01": [
-          {
-            description: "Commit 1",
-            date: "2023-10-01",
-            repo: "repo1",
-            person: "person1",
-          },
-        ],
+        "2023-10-01": [createCommit("Commit 1", "2023-10-01", "person1")],
       },
       {
-        "2023-10-02": [
-          {
-            description: "Commit 2",
-            date: "2023-10-02",
-            repo: "repo1",
-            person: "person2",
-          },
-        ],
+        "2023-10-02": [createCommit("Commit 2", "2023-10-02", "person2")],
       },
       {
-        "2023-10-03": [
-          {
-            description: "Commit 3",
-            date: "2023-10-03",
-            repo: "repo1",
-            person: "person3",
-          },
-        ],
+        "2023-10-03": [createCommit("Commit 3", "2023-10-03", "person3")],
       },
     ];
 
@@ -240,47 +198,17 @@ describe("combineCommitsWithSameDate", () => {
 
   it("should handle multiple commits on the same date", () => {
     const sampleCommits: Commit[] = [
-      {
-        description: "Commit 1",
-        date: "2023-10-01",
-        repo: "repo1",
-        person: "person1",
-      },
-      {
-        description: "Commit 2",
-        date: "2023-10-01",
-        repo: "repo1",
-        person: "person2",
-      },
-      {
-        description: "Commit 3",
-        date: "2023-10-01",
-        repo: "repo1",
-        person: "person3",
-      },
+      createCommit("Commit 1", "2023-10-01", "person1"),
+      createCommit("Commit 2", "2023-10-01", "person2"),
+      createCommit("Commit 3", "2023-10-01", "person3"),
     ];
 
     const expectedOutput = [
       {
         "2023-10-01": [
-          {
-            description: "Commit 1",
-            date: "2023-10-01",
-            repo: "repo1",
-            person: "person1",
-          },
-          {
-            description: "Commit 2",
-            date: "2023-10-01",
-            repo: "repo1",
-            person: "person2",
-          },
-          {
-            description: "Commit 3",
-            date: "2023-10-01",
-            repo: "repo1",
-            person: "person3",
-          },
+          createCommit("Commit 1", "2023-10-01", "person1"),
+          createCommit("Commit 2", "2023-10-01", "person2"),
+          createCommit("Commit 3", "2023-10-01", "person3"),
         ],
       },
     ];
