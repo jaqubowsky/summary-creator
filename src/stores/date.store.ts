@@ -1,7 +1,4 @@
-import {
-  getFirstDayOfCurrentMonth,
-  getLastDayOfCurrentMonth,
-} from "@/lib/date/date";
+import { getFirstDayOfCurrentMonth, getLastDayOfCurrentMonth } from "@/lib/date/date";
 import { create } from "zustand";
 
 interface DateStore {

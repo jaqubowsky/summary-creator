@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useReposStore } from '@/stores/repos.store';
-import { Button } from './ui/button';
-import { Label } from './ui/label';
+import { useReposStore } from "@/stores/repos.store";
+import { Button } from "./ui/button";
+import { Label } from "./ui/label";
 
 const ReposWrapper = () => {
   const { repos, removeRepo } = useReposStore();

@@ -1,6 +1,6 @@
-import { SummaryAside } from './SummaryAside';
-import { SummaryHeader } from './SummaryHeader';
-import { SummaryTable } from './SummaryTable';
+import { SummaryAside } from "./SummaryAside";
+import { SummaryHeader } from "./SummaryHeader";
+import { SummaryTable } from "./SummaryTable";
 
 export default function MainPage() {
   return (

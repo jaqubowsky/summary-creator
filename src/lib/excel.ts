@@ -9,9 +9,7 @@ const createNewWorkbook = (worksheetName: string) => {
 };
 
 const capitalizeHeaders = (headers: (keyof FormattedCommit)[]) => {
-  return headers.map(
-    (header) => header.charAt(0).toUpperCase() + header.slice(1)
-  );
+  return headers.map((header) => header.charAt(0).toUpperCase() + header.slice(1));
 };
 
 const setFontAndFill = (row: ExcelJS.Row) => {
@@ -24,10 +22,7 @@ const setFontAndFill = (row: ExcelJS.Row) => {
   };
 };
 
-const setColumnWidths = (
-  worksheet: ExcelJS.Worksheet,
-  columnWidths: number[]
-) => {
+const setColumnWidths = (worksheet: ExcelJS.Worksheet, columnWidths: number[]) => {
   worksheet.columns.forEach((column, index) => {
     column.width = columnWidths[index];
   });
@@ -38,17 +33,12 @@ const formatHoursAndMinutes = (worksheet: ExcelJS.Worksheet) => {
   worksheet.getColumn(11).numFmt = "0";
 };
 
-const addDataToWorksheet = (
-  data: FormattedCommit[],
-  worksheet: ExcelJS.Worksheet
-) => {
+const addDataToWorksheet = (data: FormattedCommit[], worksheet: ExcelJS.Worksheet) => {
   data.forEach((commit, index) => {
     const row = Object.values(commit);
     const dataRow = worksheet.addRow(row);
 
-    if (
-      row.some((cell) => cell !== undefined && cell !== null && cell !== "")
-    ) {
+    if (row.some((cell) => cell !== undefined && cell !== null && cell !== "")) {
       dataRow.fill = {
         type: "pattern",
         pattern: "solid",

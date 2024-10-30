@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface ReposStore {
   repos: string[];
@@ -9,7 +9,7 @@ interface ReposStore {
 const useReposStore = create<ReposStore>((set) => ({
   repos: [],
   addRepo: (repo: string) => {
-    if (repo === '') return;
+    if (repo === "") return;
 
     set((state) => {
       if (state.repos.includes(repo)) return state;

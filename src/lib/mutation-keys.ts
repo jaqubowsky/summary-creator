@@ -1,3 +1,3 @@
 export const mutationKeys = {
-  generateSummary: 'generate-summary',
+  generateSummary: "generate-summary",
 };
