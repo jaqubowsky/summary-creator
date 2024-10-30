@@ -37,9 +37,7 @@ const SummaryTable = () => {
             ))}
           </TableRow>
         ) : (
-          commits?.map((commit, index) => (
-            <WorkDoneRow key={index} commit={commit} />
-          ))
+          commits?.map((commit, index) => <WorkDoneRow key={index} commit={commit} />)
         )}
       </TableBody>
     </Table>

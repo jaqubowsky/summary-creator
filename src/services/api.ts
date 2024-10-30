@@ -11,11 +11,7 @@ import openai from "@/lib/openai";
 import { generateDescriptionPrompt } from "@/lib/prompts";
 import { FormattedCommit, SortedByDateCommit } from "@/types/commits";
 
-export async function getCommitsFromRepos(
-  repos: string[],
-  startDate: Date,
-  endDate: Date,
-) {
+export async function getCommitsFromRepos(repos: string[], startDate: Date, endDate: Date) {
   let allCommits: any[] = [];
 
   for (const repo of repos) {
@@ -71,9 +67,7 @@ export async function getCommitsFromRepos(
   return combineCommitsWithSameDate(commits);
 }
 
-export async function generateDescriptionsFromCommits(
-  commits: SortedByDateCommit[],
-) {
+export async function generateDescriptionsFromCommits(commits: SortedByDateCommit[]) {
   if (!commits) return [];
 
   const descriptions = [];
@@ -116,9 +110,7 @@ export async function generateDescriptionsFromCommits(
   return descriptions;
 }
 
-export const exportCommitsDataToExcel = async (
-  data: FormattedCommit[] | undefined,
-) => {
+export const exportCommitsDataToExcel = async (data: FormattedCommit[] | undefined) => {
   if (!data) return;
 
   const { workbook, worksheet } = excel.createNewWorkbook("Commits");
@@ -138,10 +130,7 @@ export const exportCommitsDataToExcel = async (
     "totalTime",
   ];
 
-  const orderedData = getJSONDataInOrder(
-    data,
-    correctOrder,
-  ) as FormattedCommit[];
+  const orderedData = getJSONDataInOrder(data, correctOrder);
   const headers = Object.keys(orderedData[0]) as (keyof FormattedCommit)[];
 
   const capitalizedHeaders = excel.capitalizeHeaders(headers);

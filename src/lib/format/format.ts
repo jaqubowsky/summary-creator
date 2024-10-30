@@ -1,18 +1,13 @@
-import {
-  AICommit,
-  Commit,
-  FormattedCommit,
-  SortedByDateCommit,
-} from "@/types/commits";
+import { AICommit, Commit, FormattedCommit, SortedByDateCommit } from "@/types/commits";
 import { GitHubCommit } from "@/types/github";
 
 const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
   const { commit: commitData, author } = commit;
   const { message } = commitData;
 
-  const name = commitData?.author?.name || author?.login || "Unknown";
+  const name = commitData?.author?.name ?? author?.login ?? "Unknown";
 
-  const dateString = commit.commit.author?.date || "";
+  const dateString = commit.commit.author?.date ?? "";
   const date = dateString ? new Date(dateString) : null;
 
   const formattedDate =
@@ -94,9 +89,7 @@ function getJSONDataInOrder(data: FormattedCommit[], order: string[]) {
   return orderedData as FormattedCommit[];
 }
 
-function combineCommitsWithSameDate(
-  commits: Commit[],
-): { [date: string]: Commit[] | [] }[] {
+function combineCommitsWithSameDate(commits: Commit[]): { [date: string]: Commit[] | [] }[] {
   try {
     const groupedCommits: SortedByDateCommit = commits.reduce((acc, commit) => {
       const { date, ...rest } = commit;
@@ -116,9 +109,4 @@ function combineCommitsWithSameDate(
   }
 }
 
-export {
-  combineCommitsWithSameDate,
-  formatCommitsFromAI,
-  formatGitHubCommit,
-  getJSONDataInOrder,
-};
+export { combineCommitsWithSameDate, formatCommitsFromAI, formatGitHubCommit, getJSONDataInOrder };
