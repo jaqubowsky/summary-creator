@@ -1,18 +1,14 @@
 "use server";
 
-import * as excel from "@/lib/excel";
-import {
-  combineCommitsWithSameDate,
-  formatGitHubCommit,
-  getJSONDataInOrder,
-} from "@/lib/format/format";
+import { combineCommitsWithSameDate, formatGitHubCommit } from "@/lib/format/format";
 import octokit from "@/lib/octokit";
 import openai from "@/lib/openai";
 import { generateDescriptionPrompt } from "@/lib/prompts";
-import { FormattedCommit, SortedByDateCommit } from "@/types/commits";
+import { AICommit, SortedByDateCommit } from "@/types/commits";
+import { GitHubCommit } from "@/types/github";
 
 export async function getCommitsFromRepos(repos: string[], startDate: Date, endDate: Date) {
-  let allCommits: any[] = [];
+  let allCommits: GitHubCommit[] = [];
 
   for (const repo of repos) {
     const [owner, repoName] = repo.split("/");
@@ -32,10 +28,10 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
 
     for (const branch of branches.data) {
       let page = 1;
-      const perPage = 100;
+      const perPage = 999;
 
       while (true) {
-        const { data } = await octokit.rest.repos.listCommits({
+        const { data } = (await octokit.rest.repos.listCommits({
           owner,
           repo: repoName,
           author: process.env.GITHUB_USERNAME,
@@ -44,7 +40,7 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
           per_page: perPage,
           page,
           sha: branch.name,
-        });
+        })) as { data: GitHubCommit[] };
 
         if (data.length === 0) break;
 
@@ -54,7 +50,7 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
     }
   }
 
-  if (!allCommits.length) return null;
+  if (!allCommits.length) return [];
 
   allCommits.reverse();
 
@@ -70,7 +66,7 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
 export async function generateDescriptionsFromCommits(commits: SortedByDateCommit[]) {
   if (!commits) return [];
 
-  const descriptions = [];
+  const descriptions: AICommit[] = [];
 
   for (const day of commits) {
     const dayOfCommits = Object.values(day)[0];
@@ -109,39 +105,3 @@ export async function generateDescriptionsFromCommits(commits: SortedByDateCommi
 
   return descriptions;
 }
-
-export const exportCommitsDataToExcel = async (data: FormattedCommit[] | undefined) => {
-  if (!data) return;
-
-  const { workbook, worksheet } = excel.createNewWorkbook("Commits");
-
-  const correctOrder = [
-    "person",
-    "description",
-    "issue",
-    "client",
-    "product",
-    "category",
-    "date",
-    "start",
-    "end",
-    "hours",
-    "minutes",
-    "totalTime",
-  ];
-
-  const orderedData = getJSONDataInOrder(data, correctOrder);
-  const headers = Object.keys(orderedData[0]) as (keyof FormattedCommit)[];
-
-  const capitalizedHeaders = excel.capitalizeHeaders(headers);
-  const headerRow = worksheet.addRow(capitalizedHeaders);
-  excel.setFontAndFill(headerRow);
-
-  const columnWidths = [20, 40, 30, 15, 15, 20, 15, 10, 10, 10, 10, 15];
-  excel.setColumnWidths(worksheet, columnWidths);
-
-  excel.addDataToWorksheet(orderedData, worksheet);
-  excel.formatHoursAndMinutes(worksheet);
-
-  await excel.downloadWorkbook(workbook, "commits");
-};
