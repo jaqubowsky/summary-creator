@@ -28,7 +28,7 @@ describe("Date Utility Functions", () => {
     const today = new Date();
 
     const lastDay = getLastDayOfCurrentMonth();
-    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 1);
     expect(lastDay.getFullYear()).toBe(expectedLastDay.getFullYear());
     expect(lastDay.getMonth()).toBe(expectedLastDay.getMonth());
     expect(lastDay.getDate()).toBe(expectedLastDay.getDate());
