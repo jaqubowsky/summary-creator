@@ -18,10 +18,10 @@ const useGenerateSummary = () => {
       if (!repos.length) return [];
 
       const commits = await getCommitsFromRepos(repos, startDate, endDate);
-      if (!commits) return [];
+      if (!Object.values(commits)?.length) return [];
 
       const descriptions = await generateDescriptionsFromCommits(commits);
-      if (!descriptions) return [];
+      if (!descriptions.length) return [];
 
       const summary = formatCommitsFromAI(descriptions);
 
