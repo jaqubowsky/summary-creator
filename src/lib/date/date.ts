@@ -2,6 +2,7 @@ function getFirstDayOfCurrentMonth() {
   const today = new Date();
 
   today.setDate(1);
+  today.setHours(2, 0, 0, 0);
 
   return today;
 }
@@ -11,10 +12,10 @@ function getLastDayOfCurrentMonth() {
 
   today.setMonth(today.getMonth() + 1, 1);
   today.setDate(today.getDate() - 1);
+  today.setHours(24, 59, 59, 999);
 
   return today;
 }
-
 function formatStringToDate(dateString: string) {
   return new Date(dateString);
 }
