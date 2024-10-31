@@ -54,6 +54,10 @@ const addDataToWorksheet = (data: FormattedCommit[], worksheet: ExcelJS.Workshee
 };
 
 const downloadWorkbook = async (workbook: ExcelJS.Workbook, name: string) => {
+  if (typeof window === "undefined") {
+    throw new Error("This function can only be used in the browser");
+  }
+
   const buffer = await workbook.xlsx.writeBuffer();
   const blob = new Blob([buffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

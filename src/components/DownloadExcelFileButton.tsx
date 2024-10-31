@@ -1,7 +1,7 @@
 "use client";
 
 import { mutationKeys } from "@/lib/mutation-keys";
-import { exportCommitsDataToExcel } from "@/services/api";
+import { exportCommitsDataToExcel } from "@/services/excel";
 import { FormattedCommit } from "@/types/commits";
 import { useMutationState } from "@tanstack/react-query";
 import { Button } from "./ui/button";
