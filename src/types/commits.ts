@@ -28,7 +28,6 @@ export type AICommit = Omit<Commit, "repo" | "date"> & {
   hours: number;
   minutes: number;
   issue: string;
-  totalTime: number;
 };
 
 export type SortedByDateCommit = {

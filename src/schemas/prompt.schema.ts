@@ -11,7 +11,6 @@ const promptSchema = z.object({
       date: z.string(),
       hours: z.number(),
       minutes: z.number(),
-      totalTime: z.number(),
     }),
   ),
 });

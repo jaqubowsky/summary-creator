@@ -75,7 +75,6 @@ describe("formatCommitsFromAI", () => {
         end: "11:00",
         hours: 1,
         minutes: 0,
-        totalTime: 0,
         issue: "",
         person: "",
         date: "",
@@ -84,22 +83,23 @@ describe("formatCommitsFromAI", () => {
 
     const expectedOutput: FormattedCommit[] = [
       {
+        person: "",
         description: "Commit 1",
         issue: "",
         client: "",
         product: "",
         category: "",
+        date: "",
+        start: "10:00",
         end: "11:00",
         hours: 1,
         minutes: 0,
-        totalTime: 0,
-        person: "",
-        date: "",
-        start: "10:00",
+        totalTime: 1,
       },
     ];
 
     const result = formatCommitsFromAI(sampleData);
+    console.log(result);
     expect(result).toEqual(expectedOutput);
   });
 });

@@ -9,6 +9,14 @@ import { AICommit, SortedByDateCommit } from "@/types/commits";
 import { GitHubCommit } from "@/types/github";
 import { zodResponseFormat } from "openai/helpers/zod.mjs";
 
+export async function getAllRepositories() {
+  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
+    per_page: 100,
+  });
+
+  return data.map((repo) => repo.full_name);
+}
+
 export async function getCommitsFromRepos(repos: string[], startDate: Date, endDate: Date) {
   let allCommits: GitHubCommit[] = [];
 

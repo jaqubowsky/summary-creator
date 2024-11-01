@@ -35,16 +35,15 @@ const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
 };
 
 function formatCommitsFromAI(data: AICommit[], client = "", product = "", category = "") {
-  const result: FormattedCommit[] = [];
-
-  for (const entry of data) {
-    result.push({
-      ...entry,
+  const commits: FormattedCommit[] = data.map((commit) => {
+    return {
+      ...commit,
       client,
       product,
       category,
-    });
-  }
+      totalTime: (commit?.hours * 60 + commit?.minutes) / 60 || 0,
+    };
+  });
 
   const order = [
     "person",
@@ -61,9 +60,7 @@ function formatCommitsFromAI(data: AICommit[], client = "", product = "", catego
     "totalTime",
   ];
 
-  const jsonDataInOrder = getJSONDataInOrder(result, order);
-
-  return jsonDataInOrder;
+  return getJSONDataInOrder(commits, order);
 }
 
 function getJSONDataInOrder(data: FormattedCommit[], order: string[]) {
