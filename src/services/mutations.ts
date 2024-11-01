@@ -24,7 +24,6 @@ const useGenerateSummary = () => {
       if (!descriptions.length) return [];
 
       const summary = formatCommitsFromAI(descriptions);
-
       return summary;
     },
     onError: (error) => {

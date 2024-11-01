@@ -22,27 +22,24 @@ const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
           .join(".")
       : "Unknown";
 
+  const issueMatch = message.match(/#(\d+)/);
+  const issue = issueMatch ? issueMatch[1] : "";
+
   return {
     repo,
     person: name,
     description: message,
     date: formattedDate,
+    issue,
   };
 };
 
-function formatCommitsFromAI(
-  data: AICommit[],
-  issue = "",
-  client = "",
-  product = "",
-  category = "",
-): FormattedCommit[] {
+function formatCommitsFromAI(data: AICommit[], client = "", product = "", category = "") {
   const result: FormattedCommit[] = [];
 
   for (const entry of data) {
     result.push({
       ...entry,
-      issue,
       client,
       product,
       category,

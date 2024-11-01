@@ -4,8 +4,10 @@ import { combineCommitsWithSameDate, formatGitHubCommit } from "@/lib/format/for
 import octokit from "@/lib/octokit";
 import openai from "@/lib/openai";
 import { generateDescriptionPrompt } from "@/lib/prompts";
+import { promptSchema } from "@/schemas/prompt.schema";
 import { AICommit, SortedByDateCommit } from "@/types/commits";
 import { GitHubCommit } from "@/types/github";
+import { zodResponseFormat } from "openai/helpers/zod.mjs";
 
 export async function getCommitsFromRepos(repos: string[], startDate: Date, endDate: Date) {
   let allCommits: GitHubCommit[] = [];
@@ -74,11 +76,9 @@ export async function generateDescriptionsFromCommits(commits: SortedByDateCommi
     const { system, user } = generateDescriptionPrompt(dayOfCommits);
 
     try {
-      const response = await openai.chat.completions.create({
+      const response = await openai.beta.chat.completions.parse({
         model: process.env.OPENAI_MODEL as string,
-        response_format: {
-          type: "json_object",
-        },
+        response_format: zodResponseFormat(promptSchema, "data"),
         messages: [
           {
             role: "system",
@@ -91,13 +91,10 @@ export async function generateDescriptionsFromCommits(commits: SortedByDateCommi
         ],
       });
 
-      const completion = response.choices[0].message.content;
-      if (!completion) continue;
+      const data = response.choices[0].message?.parsed?.data;
+      if (!data?.length) continue;
 
-      const parsedCompletion = JSON.parse(completion);
-      if (!parsedCompletion.workDone) continue;
-
-      descriptions.push(...parsedCompletion.workDone);
+      descriptions.push(...data);
     } catch (error) {
       console.error(error);
     }

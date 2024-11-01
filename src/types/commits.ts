@@ -18,6 +18,7 @@ export type Commit = {
   person: string;
   description: string;
   date: string;
+  issue: string;
 };
 
 export type AICommit = Omit<Commit, "repo" | "date"> & {
@@ -26,6 +27,7 @@ export type AICommit = Omit<Commit, "repo" | "date"> & {
   date: string;
   hours: number;
   minutes: number;
+  issue: string;
   totalTime: number;
 };
 

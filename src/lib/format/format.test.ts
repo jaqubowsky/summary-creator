@@ -26,6 +26,7 @@ describe("formatGitHubCommit", () => {
       person: "John Doe",
       description: "Initial commit",
       date: "01.10.2023",
+      issue: "",
     };
 
     const result = formatGitHubCommit(sampleCommit, sampleRepoName);
@@ -43,6 +44,7 @@ describe("formatGitHubCommit", () => {
       person: "Jane Doe",
       description: "Time zone test commit",
       date: "02.10.2023",
+      issue: "",
     };
 
     const result = formatGitHubCommit(sampleCommit, sampleRepoName);
@@ -56,6 +58,7 @@ describe("formatGitHubCommit", () => {
       person: "Unknown",
       description: "Commit with no author",
       date: "Unknown",
+      issue: "",
     };
 
     const result = formatGitHubCommit(sampleCommit, sampleRepoName);
@@ -73,6 +76,7 @@ describe("formatCommitsFromAI", () => {
         hours: 1,
         minutes: 0,
         totalTime: 0,
+        issue: "",
         person: "",
         date: "",
       },
@@ -169,6 +173,7 @@ describe("combineCommitsWithSameDate", () => {
   const createCommit = (description: string, date: string, person: string): Commit => ({
     description,
     date,
+    issue: "",
     repo: "repo1",
     person,
   });
