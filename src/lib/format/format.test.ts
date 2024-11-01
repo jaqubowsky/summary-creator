@@ -99,7 +99,6 @@ describe("formatCommitsFromAI", () => {
     ];
 
     const result = formatCommitsFromAI(sampleData);
-    console.log(result);
     expect(result).toEqual(expectedOutput);
   });
 });
