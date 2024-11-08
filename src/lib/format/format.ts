@@ -1,7 +1,7 @@
 import { AICommit, Commit, FormattedCommit, SortedByDateCommit } from "@/types/commits";
 import { GitHubCommit } from "@/types/github";
 
-const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
+const formatGitHubCommit = (commit: GitHubCommit, owner: string, repo: string) => {
   const { commit: commitData, author } = commit;
   const { message } = commitData;
 
@@ -23,14 +23,15 @@ const formatGitHubCommit = (commit: GitHubCommit, repo: string) => {
       : "Unknown";
 
   const issueMatch = message.match(/#(\d+)/);
-  const issue = issueMatch ? issueMatch[1] : "";
+  const issueNumber = issueMatch ? issueMatch[1] : "";
+  const issueLink = issueNumber ? `https://github.com/${owner}/${repo}/issues/${issueNumber}` : "";
 
   return {
     repo,
     person: name,
     description: message,
     date: formattedDate,
-    issue,
+    issue: issueLink,
   };
 };
 

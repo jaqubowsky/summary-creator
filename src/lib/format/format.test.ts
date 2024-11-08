@@ -8,6 +8,7 @@ import {
   getJSONDataInOrder,
 } from "./format";
 
+const sampleOwnerName = "JohnDoe";
 const sampleRepoName = "sample-repo";
 
 describe("formatGitHubCommit", () => {
@@ -29,7 +30,7 @@ describe("formatGitHubCommit", () => {
       issue: "",
     };
 
-    const result = formatGitHubCommit(sampleCommit, sampleRepoName);
+    const result = formatGitHubCommit(sampleCommit, sampleOwnerName, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
 
@@ -47,7 +48,7 @@ describe("formatGitHubCommit", () => {
       issue: "",
     };
 
-    const result = formatGitHubCommit(sampleCommit, sampleRepoName);
+    const result = formatGitHubCommit(sampleCommit, sampleOwnerName, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
 
@@ -61,7 +62,7 @@ describe("formatGitHubCommit", () => {
       issue: "",
     };
 
-    const result = formatGitHubCommit(sampleCommit, sampleRepoName);
+    const result = formatGitHubCommit(sampleCommit, sampleOwnerName, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
 });

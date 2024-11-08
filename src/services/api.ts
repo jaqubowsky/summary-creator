@@ -1,6 +1,6 @@
 "use server";
 
-import { combineCommitsWithSameDate, formatGitHubCommit } from "@/lib/format/format";
+import { formatGitHubCommit } from "@/lib/format/format";
 import octokit from "@/lib/octokit";
 import openai from "@/lib/openai";
 import { generateDescriptionPrompt } from "@/lib/prompts";
@@ -41,7 +41,7 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
       const perPage = 999;
 
       while (true) {
-        const { data } = (await octokit.rest.repos.listCommits({
+        const response = await octokit.rest.repos.listCommits({
           owner,
           repo: repoName,
           author: process.env.GITHUB_USERNAME,
@@ -50,8 +50,9 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
           per_page: perPage,
           page,
           sha: branch.name,
-        })) as { data: GitHubCommit[] };
+        });
 
+        const data = response.data as GitHubCommit[];
         if (data.length === 0) break;
 
         allCommits = allCommits.concat(data);
@@ -65,12 +66,14 @@ export async function getCommitsFromRepos(repos: string[], startDate: Date, endD
   allCommits.reverse();
 
   const commits = allCommits.map((commit) => {
-    const repoName = commit.parents[0].url.split("/")[5];
+    const urlParts = commit.parents[0].url.split("/");
+    const owner = urlParts[4];
+    const repoName = urlParts[5];
 
-    return formatGitHubCommit(commit, repoName);
+    return formatGitHubCommit(commit, owner, repoName);
   });
 
-  return combineCommitsWithSameDate(commits);
+  return commits;
 }
 
 export async function generateDescriptionsFromCommits(commits: SortedByDateCommit[]) {
