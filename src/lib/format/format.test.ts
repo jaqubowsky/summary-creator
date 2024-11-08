@@ -65,6 +65,20 @@ describe("formatGitHubCommit", () => {
     const result = formatGitHubCommit(sampleCommit, sampleOwnerName, sampleRepoName);
     expect(result).toEqual(expectedOutput);
   });
+  it("should create issue link correctly", () => {
+    const sampleCommit = createGitHubCommit("John Doe", "2023-10-01T12:34:56Z", "Fix #432");
+
+    const expectedOutput = {
+      repo: sampleRepoName,
+      person: "John Doe",
+      description: "Fix #432",
+      date: "01.10.2023",
+      issue: `https://github.com/${sampleOwnerName}/${sampleRepoName}/issues/432`,
+    };
+
+    const result = formatGitHubCommit(sampleCommit, sampleOwnerName, sampleRepoName);
+    expect(result).toEqual(expectedOutput);
+  });
 });
 
 describe("formatCommitsFromAI", () => {
